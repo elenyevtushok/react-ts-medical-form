@@ -33,23 +33,29 @@ const INITIAL_DATA: MedicalFormData = {
 const conditionsArray = Object.keys(Conditions)
 	.filter((k: string) => !isNaN(Number(k)))
 	.map((k: string) => Number(k));
+console.log(conditionsArray)
 
 const middleIndex = Math.ceil(conditionsArray.length / 2);
 
 const dividedConditionsArray = [conditionsArray.splice(0, middleIndex), conditionsArray.splice(-middleIndex)];
 
 function App(dto: MedicalFormData) {
-	const [data, setData] = useState(INITIAL_DATA)
+	const [data, setData] = useState(INITIAL_DATA);
+	const [selectedOption, setSelectedOption] = useState<String>();
 
 	const updateFields = (fields: Partial<MedicalFormData>) => {
 		setData(prev => {
 			return { ...prev, ...fields }
-
 		})
 	}
+	//Handle select options
+	const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const value = event.target.value;
+		setSelectedOption(value);
+		console.log(selectedOption)
+	};
 
 	return (
-
 		<Container>
 			<h1>Medical History Form</h1>
 			<Form>
@@ -99,7 +105,7 @@ function App(dto: MedicalFormData) {
 						</Form.Group>
 						<Form.Group controlId="formGridState" className="mb-3" >
 							<Form.Label>What is your gender?</Form.Label>
-							<Form.Select className='select'>
+							<Form.Select className='select' onChange={selectChange}>
 								<option>Please Select</option>
 								{Object.keys(Gender)
 									.filter((k: string) => !isNaN(Number(k)))
@@ -131,7 +137,17 @@ function App(dto: MedicalFormData) {
 						dividedConditionsArray.map((conditions, index) => {
 							return <Col key={index}>
 								{
-									conditions.map((i: number) => <Form.Check name="conditions_group" key={i} label={Conditions[i]}></Form.Check>)
+									conditions.map((i: number) =>
+										<Form.Check
+											name="conditions_group"
+											key={i}
+											label={Conditions[i]}
+											value={Conditions[i]}
+											id={`custom-checkbox-${i}`}
+
+											>
+
+										</Form.Check>)
 								}
 							</Col>
 						})
