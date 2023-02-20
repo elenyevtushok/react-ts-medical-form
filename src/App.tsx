@@ -38,13 +38,15 @@ const middleIndex = Math.ceil(conditionsArray.length / 2);
 
 const dividedConditionsArray = [conditionsArray.splice(0, middleIndex), conditionsArray.splice(-middleIndex)];
 
-type UserFormProps = MedicalFormData & {
-	updateFields(fields: Partial<MedicalFormData>): void
-}
-
-
 function App(dto: MedicalFormData) {
 	const [data, setData] = useState(INITIAL_DATA)
+
+	const updateFields = (fields: Partial<MedicalFormData>) => {
+		setData(prev => {
+			return { ...prev, ...fields }
+
+		})
+	}
 
 	return (
 
@@ -58,7 +60,7 @@ function App(dto: MedicalFormData) {
 							<Form.Control
 								type="text"
 								value={dto.firstName}
-								
+								onChange={e => { updateFields({ firstName: e.target.value }); console.log(data) }}
 							/>
 							<Form.Text className="text-muted">
 								First Name
@@ -68,8 +70,9 @@ function App(dto: MedicalFormData) {
 							<Form.Label>What is your age?</Form.Label>
 							<Form.Control
 								placeholder="ex: 23"
-								type="text"
+								type="number"
 								value={dto.age}
+								onChange={e => { updateFields({ age: e.target.value }); console.log(data) }}
 							/>
 						</Form.Group>
 						<Form.Group className="mb-3" controlId="formBasicText">
@@ -78,6 +81,7 @@ function App(dto: MedicalFormData) {
 								placeholder="(000) 000-0000"
 								type="text"
 								value={dto.contactNumber}
+								onChange={e => { updateFields({ contactNumber: e.target.value }); console.log(data) }}
 							/>
 						</Form.Group>
 					</Col>
@@ -86,7 +90,9 @@ function App(dto: MedicalFormData) {
 							<Form.Label>Last Name</Form.Label>
 							<Form.Control
 								type="text"
-								value={dto.lastName} />
+								value={dto.lastName}
+								onChange={e => { updateFields({ lastName: e.target.value }); console.log(data) }}
+							/>
 							<Form.Text className="text-muted">
 								Last Name
 							</Form.Text>
@@ -107,7 +113,9 @@ function App(dto: MedicalFormData) {
 							<Form.Control
 								type="email"
 								value={dto.email}
-								placeholder="Enter email" />
+								placeholder="Enter email"
+								onChange={e => { updateFields({ email: e.target.value }); console.log(data) }}
+							/>
 							<Form.Text className="text-muted">
 								example@example.com
 							</Form.Text>
