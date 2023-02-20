@@ -13,7 +13,7 @@ type MedicalFormData = {
 	gender: Gender;
 	contactNumber: string;
 	email: string;
-	conditions: Conditions[]
+	conditions: string[]
 }
 
 enum Gender { Male, Female, Other };
@@ -33,7 +33,6 @@ const INITIAL_DATA: MedicalFormData = {
 const conditionsArray = Object.keys(Conditions)
 	.filter((k: string) => !isNaN(Number(k)))
 	.map((k: string) => Number(k));
-console.log(conditionsArray)
 
 const middleIndex = Math.ceil(conditionsArray.length / 2);
 
@@ -41,19 +40,18 @@ const dividedConditionsArray = [conditionsArray.splice(0, middleIndex), conditio
 
 function App(dto: MedicalFormData) {
 	const [data, setData] = useState(INITIAL_DATA);
-	const [selectedOption, setSelectedOption] = useState<String>();
+	console.log(data)
+
 
 	const updateFields = (fields: Partial<MedicalFormData>) => {
 		setData(prev => {
 			return { ...prev, ...fields }
 		})
 	}
-	//Handle select options
-	const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const value = event.target.value;
-		setSelectedOption(value);
-		console.log(selectedOption)
-	};
+
+	// const [field, setField] = useState([]);
+
+	// setField([].slice.call(e.target.selectedOptions).map(item => item.value))
 
 	return (
 		<Container>
@@ -105,7 +103,7 @@ function App(dto: MedicalFormData) {
 						</Form.Group>
 						<Form.Group controlId="formGridState" className="mb-3" >
 							<Form.Label>What is your gender?</Form.Label>
-							<Form.Select className='select' onChange={selectChange}>
+							<Form.Select className='select' onChange={(e) => { updateFields({ gender: Gender[e.target.value as keyof typeof Gender] }) }}>
 								<option>Please Select</option>
 								{Object.keys(Gender)
 									.filter((k: string) => !isNaN(Number(k)))
@@ -128,12 +126,8 @@ function App(dto: MedicalFormData) {
 						</Form.Group>
 					</Col>
 				</Row>
-
-				<h4>
-					Check the conditions that apply to you or any member of your immediate relatives:
-				</h4>
 				<Row>
-					{
+					{/* {
 						dividedConditionsArray.map((conditions, index) => {
 							return <Col key={index}>
 								{
@@ -144,14 +138,24 @@ function App(dto: MedicalFormData) {
 											label={Conditions[i]}
 											value={Conditions[i]}
 											id={`custom-checkbox-${i}`}
-
-											>
+											onChange={(e) => { }}
+										>
 
 										</Form.Check>)
 								}
 							</Col>
 						})
-					}
+					} */}
+					<Form.Group as={Col} controlId="my_multiselect_field">
+						<Form.Label>Check the conditions that apply to you or any member of your immediate relatives:</Form.Label>
+						<Form.Control as="select" multiple value={data.conditions} onChange={e => updateFields({ conditions: [].slice.call(e.target.selectedOptions).map(item => item.value) })}>
+							{Object.keys(Conditions)
+								.filter((k: string) => !isNaN(Number(k)))
+								.map((k: string) => Number(k))
+								.map((i: number) => <option key={Conditions[i]} value={Conditions[i]} >{Conditions[i]}</option>)
+							}
+						</Form.Control>
+					</Form.Group>
 				</Row>
 
 			</Form>
