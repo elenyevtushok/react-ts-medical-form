@@ -13,7 +13,8 @@ type MedicalFormData = {
 	gender: Gender;
 	contactNumber: string;
 	email: string;
-	conditions: string[]
+	conditions: string[];
+	medication: boolean;
 }
 
 enum Gender { Male, Female, Other };
@@ -27,16 +28,9 @@ const INITIAL_DATA: MedicalFormData = {
 	gender: 0,
 	contactNumber: "",
 	email: "",
-	conditions: []
+	conditions: [],
+	medication: false
 }
-
-const conditionsArray = Object.keys(Conditions)
-	.filter((k: string) => !isNaN(Number(k)))
-	.map((k: string) => Number(k));
-
-const middleIndex = Math.ceil(conditionsArray.length / 2);
-
-const dividedConditionsArray = [conditionsArray.splice(0, middleIndex), conditionsArray.splice(-middleIndex)];
 
 function App(dto: MedicalFormData) {
 	const [data, setData] = useState(INITIAL_DATA);
@@ -48,10 +42,6 @@ function App(dto: MedicalFormData) {
 			return { ...prev, ...fields }
 		})
 	}
-
-	// const [field, setField] = useState([]);
-
-	// setField([].slice.call(e.target.selectedOptions).map(item => item.value))
 
 	return (
 		<Container>
@@ -127,27 +117,8 @@ function App(dto: MedicalFormData) {
 					</Col>
 				</Row>
 				<Row>
-					{/* {
-						dividedConditionsArray.map((conditions, index) => {
-							return <Col key={index}>
-								{
-									conditions.map((i: number) =>
-										<Form.Check
-											name="conditions_group"
-											key={i}
-											label={Conditions[i]}
-											value={Conditions[i]}
-											id={`custom-checkbox-${i}`}
-											onChange={(e) => { }}
-										>
-
-										</Form.Check>)
-								}
-							</Col>
-						})
-					} */}
 					<Form.Group as={Col} controlId="my_multiselect_field">
-						<Form.Label>Check the conditions that apply to you or any member of your immediate relatives:</Form.Label>
+						<Form.Label>Check the conditions that apply to you or any member of your immediate relatives (use Ctrl or Command to choose multiple):</Form.Label>
 						<Form.Control as="select" multiple value={data.conditions} onChange={e => updateFields({ conditions: [].slice.call(e.target.selectedOptions).map(item => item.value) })}>
 							{Object.keys(Conditions)
 								.filter((k: string) => !isNaN(Number(k)))
@@ -157,6 +128,25 @@ function App(dto: MedicalFormData) {
 						</Form.Control>
 					</Form.Group>
 				</Row>
+				<Form.Group as={Row} controlId="taking_medicines_radio_buttons">
+					<Form.Label>Are you currently taking any medication?
+					</Form.Label>
+					<Form.Check
+						inline
+						label="Yes"
+						name="group1"
+						type={'radio'}
+						onChange={(e) => {updateFields({ medication: true }); console.log(data)}}
+					/>
+					<Form.Check
+						defaultChecked
+						inline
+						label="No"
+						name="group1"
+						type={'radio'}
+						onChange={(e) => updateFields({ medication: false })}
+					/>
+				</Form.Group>
 
 			</Form>
 		</Container>
