@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './App.css';
-import { PhoneNumberInput } from './PhoneNumberInput';
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
@@ -47,8 +46,6 @@ const INITIAL_DATA: MedicalFormData = {
 
 function App(dto: MedicalFormData) {
 	const [data, setData] = useState(INITIAL_DATA);
-	console.log(data)
-
 
 	const updateFields = (fields: Partial<MedicalFormData>) => {
 		setData(prev => {
@@ -56,18 +53,27 @@ function App(dto: MedicalFormData) {
 		})
 	}
 
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		alert("Your form was sent successfully");
+		console.log(data);
+		setData(INITIAL_DATA);
+	}
+
 	return (
+		<div className='wrapper'>
 		<Container>
 			<h1>Medical History Form</h1>
-			<Form>
+			<Form onSubmit={handleSubmit} >
 				<Row>
 					<Col>
 						<Form.Group className="mb-3" controlId="input_firstName">
 							<Form.Label>First Name</Form.Label>
 							<Form.Control
+								required
 								type="text"
 								value={dto.firstName}
-								onChange={e => { updateFields({ firstName: e.target.value }); console.log(data) }}
+								onChange={e => { updateFields({ firstName: e.target.value }) }}
 							/>
 							<Form.Text className="text-muted">
 								First Name
@@ -76,25 +82,28 @@ function App(dto: MedicalFormData) {
 						<Form.Group className="mb-3" controlId="input_age">
 							<Form.Label>What is your age?</Form.Label>
 							<Form.Control
+								required
+								min={18}
+								max={200}
 								className='select'
 								placeholder="ex: 23"
 								type="number"
 								value={dto.age}
-								onChange={e => { updateFields({ age: e.target.value }); console.log(data) }}
+								onChange={e => { updateFields({ age: e.target.value }) }}
 							/>
 						</Form.Group>
 						<Form.Group className="mb-3" controlId="input_contactNumber">
 							<Form.Label>Contact Number</Form.Label>
-							
 							<PhoneInput
+								required
 								className='select'
-								country="US"
+								defaultCountry="ES"
 								placeholder="Enter phone number"
 								type="phone"
 								value={dto.contactNumber}
 								onChange={(value) => updateFields({ contactNumber: value })}
 							/>
-						
+
 							<Form.Text className="text-muted">
 								(000) 000-0000
 							</Form.Text>
@@ -104,9 +113,10 @@ function App(dto: MedicalFormData) {
 						<Form.Group className="mb-3" controlId="input_lastName">
 							<Form.Label>Last Name</Form.Label>
 							<Form.Control
+								required
 								type="text"
 								value={dto.lastName}
-								onChange={e => { updateFields({ lastName: e.target.value }); console.log(data) }}
+								onChange={e => { updateFields({ lastName: e.target.value }) }}
 							/>
 							<Form.Text className="text-muted">
 								Last Name
@@ -114,7 +124,7 @@ function App(dto: MedicalFormData) {
 						</Form.Group>
 						<Form.Group controlId="gender_select" className="mb-3" >
 							<Form.Label>What is your gender?</Form.Label>
-							<Form.Select className='select' onChange={(e) => { updateFields({ gender: Gender[e.target.value as keyof typeof Gender] }) }}>
+							<Form.Select className='select' required onChange={(e) => { updateFields({ gender: Gender[e.target.value as keyof typeof Gender] }) }}>
 								<option>Please Select</option>
 								{Object.keys(Gender)
 									.filter((k: string) => !isNaN(Number(k)))
@@ -126,10 +136,11 @@ function App(dto: MedicalFormData) {
 						<Form.Group className="mb-3" controlId="input_email">
 							<Form.Label>Email address</Form.Label>
 							<Form.Control
+								required
 								type="email"
 								value={dto.email}
 								placeholder="Enter email"
-								onChange={e => { updateFields({ email: e.target.value }); console.log(data) }}
+								onChange={e => { updateFields({ email: e.target.value }) }}
 							/>
 							<Form.Text className="text-muted">
 								example@example.com
@@ -173,7 +184,7 @@ function App(dto: MedicalFormData) {
 						value="Yes"
 						name="medication"
 						type={'radio'}
-						onChange={(e) => { updateFields({ medication: true }); console.log(data) }}
+						onChange={(e) => { updateFields({ medication: true }) }}
 					/>
 					<Form.Check
 						defaultChecked
@@ -194,7 +205,7 @@ function App(dto: MedicalFormData) {
 						value="Yes"
 						name="allergies"
 						type={'radio'}
-						onChange={(e) => { updateFields({ allergies: true }); console.log(data) }}
+						onChange={(e) => { updateFields({ allergies: true }) }}
 					/>
 					<Form.Check
 						defaultChecked
@@ -215,7 +226,7 @@ function App(dto: MedicalFormData) {
 						value="Yes"
 						name="smoking"
 						type={'radio'}
-						onChange={(e) => { updateFields({ smoking: true }); console.log(data) }}
+						onChange={(e) => { updateFields({ smoking: true }) }}
 					/>
 					<Form.Check
 						defaultChecked
@@ -238,9 +249,9 @@ function App(dto: MedicalFormData) {
 						}
 					</Form.Select>
 				</Form.Group>
-				
+
 				<Form.Group controlId="submit_button_terms" className="mt-5 text-center" >
-					<Button className="mb-3 submit-button" size="lg" variant="primary">Submit</Button>
+					<Button className="mb-3 submit-button" type='submit' size="lg" variant="primary">Submit</Button>
 					<Form.Text className="text-muted">
 						By pressing Submit you agree with our
 						<a href="#">{" "}terms and conditions</a>
@@ -249,6 +260,7 @@ function App(dto: MedicalFormData) {
 
 			</Form>
 		</Container>
+		</div>
 	)
 }
 
