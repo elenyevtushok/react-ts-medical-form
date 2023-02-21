@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './App.css';
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput, { formatPhoneNumber, formatPhoneNumberIntl, isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 type MedicalFormData = {
@@ -46,6 +46,8 @@ const INITIAL_DATA: MedicalFormData = {
 
 function App(dto: MedicalFormData) {
 	const [data, setData] = useState(INITIAL_DATA);
+	const [validated, setValidated] = useState(false);
+
 
 	const updateFields = (fields: Partial<MedicalFormData>) => {
 		setData(prev => {
@@ -53,7 +55,13 @@ function App(dto: MedicalFormData) {
 		})
 	}
 
-	const handleSubmit = (e: FormEvent) => {
+	const handleSubmit = (e: any) => {
+		const form = e.currentTarget;
+		if (form.checkValidity() === false) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		setValidated(true);
 		e.preventDefault();
 		alert("Your form was sent successfully");
 		console.log(data);
@@ -64,7 +72,7 @@ function App(dto: MedicalFormData) {
 		<div className='wrapper'>
 			<Container>
 				<h1>Medical History Form</h1>
-				<Form onSubmit={handleSubmit} >
+				<Form onSubmit={handleSubmit} noValidate validated={validated}>
 					<Row>
 						<Col>
 							<Form.Group className="mb-3" controlId="input_firstName">
@@ -78,6 +86,9 @@ function App(dto: MedicalFormData) {
 								<Form.Text className="text-muted">
 									First Name
 								</Form.Text>
+								<Form.Control.Feedback type="invalid">
+									Please provide you first name
+								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group className="mb-3" controlId="input_age">
 								<Form.Label>What is your age?</Form.Label>
@@ -150,34 +161,34 @@ function App(dto: MedicalFormData) {
 					</Row>
 					<Form.Group controlId="conditions_multiple_select" className="mb-3">
 						<Form.Label>Check the conditions that apply to you or any member of your immediate relatives:</Form.Label>
-						<Form.Control
+						<Form.Select
 							as="select"
 							multiple
 							value={data.conditions}
-							onChange={e => updateFields({ conditions: [].slice.call(e.target.selectedOptions).map(item => item.value) })}>
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>) => updateFields({ conditions: [].slice.call(e.target.selectedOptions).map((item: HTMLOptionElement) => item.value) })}>
 							{Object.keys(Conditions)
 								.filter((k: string) => !isNaN(Number(k)))
 								.map((k: string) => Number(k))
 								.map((i: number) => <option key={Conditions[i]} value={Conditions[i]} >{Conditions[i]}</option>)
 							}
-						</Form.Control>
+						</Form.Select>
 						<Form.Text className="text-muted">
 							use Ctrl or Command to choose multiple options
 						</Form.Text>
 					</Form.Group>
 					<Form.Group controlId="symptoms_multiple_select" className="mb-3">
 						<Form.Label>Check the symptoms that you' re currently experiencing:</Form.Label>
-						<Form.Control
+						<Form.Select
 							as="select"
 							multiple
 							value={data.symptoms}
-							onChange={e => updateFields({ symptoms: [].slice.call(e.target.selectedOptions).map(item => item.value) })}>
+							onChange={e => updateFields({ symptoms: [].slice.call(e.target.selectedOptions).map((item: HTMLOptionElement) => item.value) })}>
 							{Object.keys(Symptoms)
 								.filter((k: string) => !isNaN(Number(k)))
 								.map((k: string) => Number(k))
 								.map((i: number) => <option key={Symptoms[i]} value={Symptoms[i]} >{Symptoms[i]}</option>)
 							}
-						</Form.Control>
+						</Form.Select>
 						<Form.Text className="text-muted">
 							use Ctrl or Command to choose multiple options
 						</Form.Text>
