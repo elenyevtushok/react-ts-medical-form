@@ -5,6 +5,9 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './App.css';
+import { PhoneNumberInput } from './PhoneNumberInput';
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 type MedicalFormData = {
 	firstName: string;
@@ -73,6 +76,7 @@ function App(dto: MedicalFormData) {
 						<Form.Group className="mb-3" controlId="input_age">
 							<Form.Label>What is your age?</Form.Label>
 							<Form.Control
+								className='select'
 								placeholder="ex: 23"
 								type="number"
 								value={dto.age}
@@ -81,12 +85,16 @@ function App(dto: MedicalFormData) {
 						</Form.Group>
 						<Form.Group className="mb-3" controlId="input_contactNumber">
 							<Form.Label>Contact Number</Form.Label>
-							<Form.Control
+							
+							<PhoneInput
+								className='select'
+								country="US"
 								placeholder="Enter phone number"
-								type="text"
+								type="phone"
 								value={dto.contactNumber}
-								onChange={e => { updateFields({ contactNumber: e.target.value }); console.log(data) }}
+								onChange={(value) => updateFields({ contactNumber: value })}
 							/>
+						
 							<Form.Text className="text-muted">
 								(000) 000-0000
 							</Form.Text>
@@ -230,6 +238,7 @@ function App(dto: MedicalFormData) {
 						}
 					</Form.Select>
 				</Form.Group>
+				
 				<Form.Group controlId="submit_button_terms" className="mt-5 text-center" >
 					<Button className="mb-3 submit-button" size="lg" variant="primary">Submit</Button>
 					<Form.Text className="text-muted">
@@ -237,6 +246,7 @@ function App(dto: MedicalFormData) {
 						<a href="#">{" "}terms and conditions</a>
 					</Form.Text>
 				</Form.Group>
+
 			</Form>
 		</Container>
 	)
