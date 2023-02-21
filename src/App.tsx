@@ -44,7 +44,7 @@ const INITIAL_DATA: MedicalFormData = {
 	alcohol: 0,
 }
 
-function App(dto: MedicalFormData) {
+function App() {
 	const [data, setData] = useState(INITIAL_DATA);
 	const [validated, setValidated] = useState(false);
 
@@ -80,7 +80,7 @@ function App(dto: MedicalFormData) {
 								<Form.Control
 									required
 									type="text"
-									value={dto.firstName}
+									value={data.firstName}
 									onChange={e => { updateFields({ firstName: e.target.value }) }}
 								/>
 								<Form.Text className="text-muted">
@@ -99,7 +99,7 @@ function App(dto: MedicalFormData) {
 									className='select'
 									placeholder="ex: 23"
 									type="number"
-									value={dto.age}
+									value={data.age}
 									onChange={e => { updateFields({ age: Number(e.target.value) }) }}
 								/>
 							</Form.Group>
@@ -111,7 +111,7 @@ function App(dto: MedicalFormData) {
 									defaultCountry="ES"
 									placeholder="Enter phone number"
 									type="phone"
-									value={dto.contactNumber}
+									value={data.contactNumber}
 									onChange={(value) => updateFields({ contactNumber: value })}
 								/>
 
@@ -126,7 +126,7 @@ function App(dto: MedicalFormData) {
 								<Form.Control
 									required
 									type="text"
-									value={dto.lastName}
+									value={data.lastName}
 									onChange={e => { updateFields({ lastName: e.target.value }) }}
 								/>
 								<Form.Text className="text-muted">
@@ -140,7 +140,7 @@ function App(dto: MedicalFormData) {
 									{Object.keys(Gender)
 										.filter((k: string) => !isNaN(Number(k)))
 										.map((k: string) => Number(k))
-										.map((i: number) => <option key={Gender[i]} value={dto.gender}>{Gender[i]}</option>)
+										.map((i: number) => <option key={Gender[i]} value={data.gender}>{Gender[i]}</option>)
 									}
 								</Form.Select>
 							</Form.Group>
@@ -149,7 +149,7 @@ function App(dto: MedicalFormData) {
 								<Form.Control
 									required
 									type="email"
-									value={dto.email}
+									value={data.email}
 									placeholder="Enter email"
 									onChange={e => { updateFields({ email: e.target.value }) }}
 								/>
@@ -264,7 +264,7 @@ function App(dto: MedicalFormData) {
 							{Object.keys(AlcoholConsuming)
 								.filter((k: string) => !isNaN(Number(k)))
 								.map((k: string) => Number(k))
-								.map((i: number) => <option key={AlcoholConsuming[i]} value={dto.alcohol}>{AlcoholConsuming[i]}</option>)
+								.map((i: number) => <option key={AlcoholConsuming[i]} value={data.alcohol}>{AlcoholConsuming[i]}</option>)
 							}
 						</Form.Select>
 					</Form.Group>
