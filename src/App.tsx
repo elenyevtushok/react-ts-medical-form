@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import './App.css';
 import PhoneInput, { formatPhoneNumber, formatPhoneNumberIntl, isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { InputGroup } from 'react-bootstrap';
 
 type MedicalFormData = {
 	firstName: string;
@@ -60,12 +61,13 @@ function App() {
 		if (form.checkValidity() === false) {
 			e.preventDefault();
 			e.stopPropagation();
-		}
-		setValidated(true);
-		e.preventDefault();
-		alert("Your form was sent successfully");
-		console.log(data);
-		setData(INITIAL_DATA);
+		} 
+		if (form.checkValidity() === true) {
+			setValidated(true);
+			e.preventDefault();
+			console.log(data);
+		} 
+		
 	}
 
 	return (
@@ -78,6 +80,7 @@ function App() {
 							<Form.Group className="mb-3" controlId="input_firstName">
 								<Form.Label>First Name</Form.Label>
 								<Form.Control
+								
 									required
 									type="text"
 									value={data.firstName}
@@ -94,27 +97,26 @@ function App() {
 								<Form.Label>What is your age?</Form.Label>
 								<Form.Control
 									required
-									min={18}
-									max={200}
 									className='select'
 									placeholder="ex: 23"
 									type="number"
 									value={data.age}
 									onChange={e => { updateFields({ age: Number(e.target.value) }) }}
 								/>
+								<Form.Control.Feedback type="invalid">
+									Please provide you age 
+								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group className="mb-3" controlId="input_contactNumber">
 								<Form.Label>Contact Number</Form.Label>
 								<PhoneInput
-									required
-									className='select'
+									className='form-control'
 									defaultCountry="ES"
 									placeholder="Enter phone number"
 									type="phone"
 									value={data.contactNumber}
 									onChange={(value) => updateFields({ contactNumber: value })}
 								/>
-
 								<Form.Text className="text-muted">
 									(000) 000-0000
 								</Form.Text>
@@ -132,10 +134,13 @@ function App() {
 								<Form.Text className="text-muted">
 									Last Name
 								</Form.Text>
+								<Form.Control.Feedback type="invalid">
+									Please provide you last name
+								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group controlId="gender_select" className="mb-3" >
 								<Form.Label>What is your gender?</Form.Label>
-								<Form.Select className='select' required onChange={(e) => { updateFields({ gender: Gender[e.target.value as keyof typeof Gender] }) }}>
+								<Form.Select className='form-control' required onChange={(e) => { updateFields({ gender: Gender[e.target.value as keyof typeof Gender] }) }}>
 									<option>Please Select</option>
 									{Object.keys(Gender)
 										.filter((k: string) => !isNaN(Number(k)))
@@ -143,6 +148,9 @@ function App() {
 										.map((i: number) => <option key={Gender[i]} value={data.gender}>{Gender[i]}</option>)
 									}
 								</Form.Select>
+								<Form.Control.Feedback type="invalid">
+									Select your gender
+								</Form.Control.Feedback>
 							</Form.Group>
 							<Form.Group className="mb-3" controlId="input_email">
 								<Form.Label>Email address</Form.Label>
@@ -156,12 +164,16 @@ function App() {
 								<Form.Text className="text-muted">
 									example@example.com
 								</Form.Text>
+								<Form.Control.Feedback type="invalid">
+									Provide valid email address
+								</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>
 					<Form.Group controlId="conditions_multiple_select" className="mb-3">
 						<Form.Label>Check the conditions that apply to you or any member of your immediate relatives:</Form.Label>
 						<Form.Select
+							className='form-control'
 							as="select"
 							multiple
 							value={data.conditions}
@@ -179,6 +191,7 @@ function App() {
 					<Form.Group controlId="symptoms_multiple_select" className="mb-3">
 						<Form.Label>Check the symptoms that you' re currently experiencing:</Form.Label>
 						<Form.Select
+							className='form-control'
 							as="select"
 							multiple
 							value={data.symptoms}
@@ -259,7 +272,7 @@ function App() {
 					</Form.Group>
 					<Form.Group controlId="alcohol_consum_select" className="mb-3" >
 						<Form.Label>How often do you consume alcohol?</Form.Label>
-						<Form.Select className='select' onChange={(e) => { updateFields({ alcohol: AlcoholConsuming[e.target.value as keyof typeof AlcoholConsuming] }) }}>
+						<Form.Select placeholder= "Please Select" className='form-control' required onChange={(e) => { updateFields({ alcohol: AlcoholConsuming[e.target.value as keyof typeof AlcoholConsuming] }) }}>
 							<option>Please Select</option>
 							{Object.keys(AlcoholConsuming)
 								.filter((k: string) => !isNaN(Number(k)))
